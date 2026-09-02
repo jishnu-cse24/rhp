@@ -1,0 +1,50 @@
+// Tallest at the Moment
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int N;
+    cin >> N;
+
+    vector<pair<int,int>> people;
+
+    for (int i = 0; i < N; i++) {
+        int H, L;
+        cin >> H >> L;
+
+        while (!people.empty() &&
+               people.back().first <= H) {
+            people.pop_back();
+        }
+
+        people.push_back({H, L});
+    }
+
+    int Q;
+    cin >> Q;
+
+    while (Q--) {
+        int T;
+        cin >> T;
+
+        int low = 0;
+        int high = people.size();
+
+        while (low < high) {
+            int mid = (low + high) / 2;
+
+            if (people[mid].second > T)
+                high = mid;
+            else
+                low = mid + 1;
+        }
+
+        cout << people[low].first << '\n';
+    }
+
+    return 0;
+}
