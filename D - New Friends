@@ -1,0 +1,85 @@
+// D - New Friends
+
+#include <bits/stdc++.h>
+using namespace std;
+
+class DSU {
+    vector<int> parent, sz;
+
+public:
+    DSU(int n) {
+        parent.resize(n + 1);
+        sz.assign(n + 1, 1);
+
+        iota(parent.begin(), parent.end(), 0);
+    }
+
+    int find(int x) {
+        if (parent[x] == x)
+            return x;
+
+        return parent[x] = find(parent[x]);
+    }
+
+    void unite(int a, int b) {
+        a = find(a);
+        b = find(b);
+
+        if (a == b)
+            return;
+
+        if (sz[a] < sz[b])
+            swap(a, b);
+
+        parent[b] = a;
+        sz[a] += sz[b];
+    }
+
+    int size(int x) {
+        return sz[find(x)];
+    }
+};
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int N, M;
+    cin >> N >> M;
+
+    DSU dsu(N);
+
+    vector<pair<int,int>> edges;
+
+    for (int i = 0; i < M; i++) {
+        int A, B;
+        cin >> A >> B;
+
+        edges.push_back({A, B});
+        dsu.unite(A, B);
+    }
+
+    vector<long long> vertices(N + 1, 0);
+    vector<long long> edgeCount(N + 1, 0);
+
+    for (int i = 1; i <= N; i++)
+        vertices[dsu.find(i)]++;
+
+    for (auto [a, b] : edges)
+        edgeCount[dsu.find(a)]++;
+
+    long long answer = 0;
+
+    for (int i = 1; i <= N; i++) {
+        if (vertices[i] > 0) {
+            long long possible =
+                vertices[i] * (vertices[i] - 1) / 2;
+
+            answer += possible - edgeCount[i];
+        }
+    }
+
+    cout << answer << '\n';
+
+    return 0;
+}
