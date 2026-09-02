@@ -1,0 +1,76 @@
+// Static Range Minimum Queries
+
+#include <bits/stdc++.h>
+using namespace std;
+
+class SegmentTree {
+    int n;
+    vector<long long> tree;
+
+public:
+    SegmentTree(vector<long long>& a) {
+        n = a.size();
+        tree.resize(4 * n);
+        build(a, 1, 0, n - 1);
+    }
+
+    void build(vector<long long>& a, int node, int l, int r) {
+        if (l == r) {
+            tree[node] = a[l];
+            return;
+        }
+
+        int mid = (l + r) / 2;
+
+        build(a, node * 2, l, mid);
+        build(a, node * 2 + 1, mid + 1, r);
+
+        tree[node] = min(tree[node * 2],
+                         tree[node * 2 + 1]);
+    }
+
+    long long query(int node, int l, int r,
+                    int ql, int qr) {
+
+        if (r < ql || l > qr)
+            return LLONG_MAX;
+
+        if (ql <= l && r <= qr)
+            return tree[node];
+
+        int mid = (l + r) / 2;
+
+        return min(
+            query(node * 2, l, mid, ql, qr),
+            query(node * 2 + 1, mid + 1, r, ql, qr)
+        );
+    }
+
+    long long query(int l, int r) {
+        return query(1, 0, n - 1, l, r);
+    }
+};
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int N, Q;
+    cin >> N >> Q;
+
+    vector<long long> A(N);
+
+    for (auto &x : A)
+        cin >> x;
+
+    SegmentTree st(A);
+
+    while (Q--) {
+        int L, R;
+        cin >> L >> R;
+
+        cout << st.query(L - 1, R - 1) << '\n';
+    }
+
+    return 0;
+}
