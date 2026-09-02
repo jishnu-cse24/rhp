@@ -1,0 +1,32 @@
+// C-Rotation
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int N, Q;
+    cin >> N >> Q;
+
+    string S;
+    cin >> S;
+
+    int start = 0;
+
+    while (Q--) {
+        int type, x;
+        cin >> type >> x;
+
+        if (type == 1) {
+            start = (start - x % N + N) % N;
+        }
+        else {
+            int index = (start + x - 1) % N;
+            cout << S[index] << '\n';
+        }
+    }
+
+    return 0;
+}
