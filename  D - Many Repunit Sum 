@@ -1,0 +1,52 @@
+// D - Many Repunit Sum
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int N;
+    cin >> N;
+
+    vector<int> A(N);
+    int mx = 0;
+
+    for (int &x : A) {
+        cin >> x;
+        mx = max(mx, x);
+    }
+
+    vector<long long> freq(mx + 2, 0);
+
+    for (int x : A)
+        freq[x]++;
+
+    // freq[i] = number of A[j] >= i
+    for (int i = mx - 1; i >= 1; i--)
+        freq[i] += freq[i + 1];
+
+    vector<int> digits;
+
+    long long carry = 0;
+
+    for (int i = 1; i <= mx; i++) {
+        long long value = freq[i] + carry;
+
+        digits.push_back(value % 10);
+        carry = value / 10;
+    }
+
+    while (carry > 0) {
+        digits.push_back(carry % 10);
+        carry /= 10;
+    }
+
+    for (int i = (int)digits.size() - 1; i >= 0; i--)
+        cout << digits[i];
+
+    cout << '\n';
+
+    return 0;
+}
