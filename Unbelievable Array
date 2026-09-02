@@ -1,0 +1,109 @@
+// Unbelievable Array
+
+#include <bits/stdc++.h>
+using namespace std;
+
+class DSU {
+    vector<int> parent;
+
+public:
+    DSU(int n) {
+        parent.resize(n + 1);
+        iota(parent.begin(), parent.end(), 0);
+    }
+
+    int find(int x) {
+        if (parent[x] == x)
+            return x;
+
+        return parent[x] = find(parent[x]);
+    }
+
+    void merge(int a, int b) {
+        a = find(a);
+        b = find(b);
+
+        if (a != b)
+            parent[a] = b;
+    }
+};
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int T;
+    cin >> T;
+
+    while (T--) {
+
+        int N, Q;
+        cin >> N >> Q;
+
+        vector<int> A(N + 1);
+
+        // representative for each value
+        unordered_map<int, int> root;
+
+        for (int i = 1; i <= N; i++) {
+            cin >> A[i];
+
+            if (!root.count(A[i]))
+                root[A[i]] = i;
+        }
+
+        DSU dsu(N);
+
+        unordered_map<int, int> value;
+
+        for (auto [x, r] : root)
+            value[r] = x;
+
+        while (Q--) {
+
+            int type;
+            cin >> type;
+
+            if (type == 1) {
+
+                int x, y;
+                cin >> x >> y;
+
+                if (!root.count(x))
+                    continue;
+
+                if (root.count(y)) {
+
+                    int rx = root[x];
+                    int ry = root[y];
+
+                    dsu.merge(rx, ry);
+
+                    root.erase(x);
+                }
+                else {
+
+                    int rx = root[x];
+
+                    root.erase(x);
+                    root[y] = rx;
+
+                    value[rx] = y;
+                }
+            }
+            else {
+
+                int idx;
+                cin >> idx;
+
+                int r = dsu.find(
+                    root[A[idx]]
+                );
+
+                cout << value[r] << '\n';
+            }
+        }
+    }
+
+    return 0;
+}
