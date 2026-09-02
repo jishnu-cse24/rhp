@@ -1,0 +1,37 @@
+// C-MinMax
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int N;
+    cin >> N;
+
+    vector<int> a(N + 1);
+
+    for (int i = 1; i <= N; i++)
+        cin >> a[i];
+
+    long long fixed = 0;
+    long long exchange = 0;
+
+    for (int i = 1; i <= N; i++) {
+        if (i == a[i]) {
+            fixed++;
+        }
+        else if (a[a[i]] == i) {
+            exchange++;
+        }
+    }
+
+    long long answer =
+        exchange / 2 +
+        fixed * (fixed - 1) / 2;
+
+    cout << answer << '\n';
+
+    return 0;
+}
