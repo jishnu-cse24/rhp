@@ -1,0 +1,61 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int T;
+    cin >> T;
+
+    while (T--) {
+        string a, b;
+        cin >> a >> b;
+
+        int n = a.size();
+        int m = b.size();
+
+        vector<vector<int>> dp(n + 1, vector<int>(m + 1, -1));
+
+        dp[0][0] = 0;
+
+        for (int i = 0; i <= n; i++) {
+            for (int j = 0; j <= m; j++) {
+
+                if (dp[i][j] == -1)
+                    continue;
+
+                // Take one digit from each string
+                if (i < n && j < m) {
+                    if (a[i] == b[j])
+                        dp[i + 1][j + 1] =
+                            max(dp[i + 1][j + 1], dp[i][j] + 1);
+                }
+
+                // Merge two digits in a
+                if (i + 1 < n) {
+                    int x = (a[i] - '0' + a[i + 1] - '0') % 10;
+                    char c = char('0' + x);
+
+                    if (j < m && c == b[j])
+                        dp[i + 2][j + 1] =
+                            max(dp[i + 2][j + 1], dp[i][j] + 1);
+                }
+
+                // Merge two digits in b
+                if (j + 1 < m) {
+                    int x = (b[j] - '0' + b[j + 1] - '0') % 10;
+                    char c = char('0' + x);
+
+                    if (i < n && a[i] == c)
+                        dp[i + 1][j + 2] =
+                            max(dp[i + 1][j + 2], dp[i][j] + 1);
+                }
+            }
+        }
+
+        cout << dp[n][m] << '\n';
+    }
+
+    return 0;
+}
